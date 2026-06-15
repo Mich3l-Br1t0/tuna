@@ -1,0 +1,9 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "include": ["apps", "config", "manage.py"],
+  "exclude": ["**/__pycache__", "**/migrations", ".venv"],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "standard",
+  "reportMissingModuleSource": false
+}

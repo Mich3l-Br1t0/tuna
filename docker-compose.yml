@@ -1,0 +1,28 @@
+# Local development services for the tuna project.
+# For now this only defines PostgreSQL; the backend and frontend services will be
+# added here later (the `db` healthcheck is already set up so they can wait on it via
+# `depends_on: { db: { condition: service_healthy } }`).
+
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: tuna-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tuna}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tuna}
+      POSTGRES_DB: ${POSTGRES_DB:-tuna}
+    ports:
+      # host:container — exposed so the backend running on the host can connect via
+      # DATABASE_URL=postgres://tuna:tuna@localhost:5432/tuna
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tuna} -d ${POSTGRES_DB:-tuna}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
