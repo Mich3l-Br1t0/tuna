@@ -10,8 +10,9 @@ class AthleteInline(admin.TabularInline):
 
 @admin.register(University)
 class UniversityAdmin(admin.ModelAdmin):
-    list_display = ("name", "created_at")
-    search_fields = ("name",)
+    list_display = ("name", "normalized_name", "created_at")
+    search_fields = ("name", "normalized_name")
+    readonly_fields = ("normalized_name",)
     inlines = (AthleteInline,)
 
 

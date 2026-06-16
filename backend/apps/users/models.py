@@ -3,14 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    """Project user model.
-
-    User type is relationship-driven, not an enum:
-    - ``university`` set  -> a university account (manages that university's athletes).
-    - ``university`` null + ``is_staff`` -> an admin (manages the system via the admin).
-    """
-
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
 
     university = models.OneToOneField(
         "universities.University",
@@ -25,3 +18,15 @@ class User(AbstractUser):
     @property
     def is_university_account(self) -> bool:
         return self.university_id is not None
+
+    def clean(self) -> None:
+        super().clean()
+        self._blank_email_to_none()
+
+    def save(self, *args, **kwargs) -> None:
+        self._blank_email_to_none()
+        super().save(*args, **kwargs)
+
+    def _blank_email_to_none(self) -> None:
+        if not self.email:
+            self.email = None

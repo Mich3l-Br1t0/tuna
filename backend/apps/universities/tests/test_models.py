@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from apps.universities.models import Athlete, University
@@ -7,10 +8,23 @@ from apps.universities.tests.factories import AthleteFactory, UniversityFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_university_name_is_unique():
-    UniversityFactory(name="Tuna Tech")
+def test_normalized_name_transliterates_accents_and_case():
+    university = University.objects.create(name="Universidade de São Paulo")
+    assert university.normalized_name == "universidade de sao paulo"
+
+
+def test_accent_or_case_variant_collides_at_db_level():
+    University.objects.create(name="Universidade de São Paulo")
     with pytest.raises(IntegrityError):
-        UniversityFactory(name="Tuna Tech")
+        University.objects.create(name="universidade de sao paulo")
+
+
+def test_duplicate_surfaces_friendly_error_on_full_clean():
+    University.objects.create(name="Universidade de São Paulo")
+    duplicate = University(name="UNIVERSIDADE DE SAO PAULO")
+    with pytest.raises(ValidationError) as exc:
+        duplicate.full_clean()
+    assert "name" in exc.value.message_dict
 
 
 def test_athlete_belongs_to_university_via_related_name():
