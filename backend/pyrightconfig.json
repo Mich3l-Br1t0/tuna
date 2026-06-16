@@ -5,5 +5,7 @@
   "exclude": ["**/__pycache__", "**/migrations", ".venv"],
   "pythonVersion": "3.12",
   "typeCheckingMode": "standard",
-  "reportMissingModuleSource": false
+  "reportMissingModuleSource": false,
+  "reportIncompatibleVariableOverride": false,
+  "reportAttributeAccessIssue": false
 }

@@ -1,16 +1,8 @@
-"""Base settings shared across all environments.
-
-Everything environment-specific is read from environment variables via
-``django-environ``. Per-environment modules (local/production/test) import ``*``
-from here and override only what differs.
-"""
-
 from datetime import timedelta
 from pathlib import Path
 
 import environ
 
-# backend/  (config/settings/base.py -> settings -> config -> backend)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env(
@@ -21,15 +13,11 @@ env = environ.Env(
     DJANGO_DEFAULT_FROM_EMAIL=(str, "no-reply@tuna.local"),
 )
 
-# Load a .env file if present (local dev). In production, real env vars take over.
 environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
-
-
-# Application definition
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -52,6 +40,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "apps.common",
     "apps.users",
+    "apps.universities",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -72,7 +61,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,18 +76,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-
-# Database — PostgreSQL via DATABASE_URL (e.g. postgres://user:pass@host:5432/db)
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
 
-
-# Custom user model — set from the first migration so it never needs swapping.
 AUTH_USER_MODEL = "users.User"
 
-
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -106,22 +89,16 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-
-# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-
-# Static files
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# Django REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
@@ -135,18 +112,15 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-
-# dj-rest-auth — JWT delivered via HTTP-only cookies (immune to XSS token theft).
 REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_COOKIE": "tuna-access",
     "JWT_AUTH_REFRESH_COOKIE": "tuna-refresh",
     "JWT_AUTH_HTTPONLY": True,
     "JWT_AUTH_SAMESITE": "Lax",
-    "JWT_AUTH_SECURE": not DEBUG,  # cookies only over HTTPS outside local dev
+    "JWT_AUTH_SECURE": not DEBUG,
     "JWT_AUTH_RETURN_EXPIRATION": True,
     "SESSION_LOGIN": False,
-    # We use JWT exclusively, so the DRF auth-token model is disabled (no authtoken app).
     "TOKEN_MODEL": None,
 }
 
@@ -157,8 +131,6 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
-
-# drf-spectacular (OpenAPI schema / Swagger / Redoc)
 SPECTACULAR_SETTINGS = {
     "TITLE": "Tuna Competition API",
     "DESCRIPTION": "Backend API for the track & field tuna competition.",
@@ -166,12 +138,12 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
+# Whether to expose the OpenAPI schema + Swagger/Redoc routes (see config/urls.py).
+# Off by default so production never serves them; local/test turn it on.
+API_DOCS_ENABLED = False
 
-# CORS / CSRF — the React SPA is a separate origin and sends credentialed requests.
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
-
-# Email — overridden per environment (console in dev, SMTP in production).
 DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL")

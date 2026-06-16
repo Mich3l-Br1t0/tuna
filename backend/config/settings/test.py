@@ -23,3 +23,6 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # Faster hashing keeps the suite snappy; never use MD5 outside tests.
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+# Exercise the docs routes in tests (the schema-served smoke test depends on them).
+API_DOCS_ENABLED = True

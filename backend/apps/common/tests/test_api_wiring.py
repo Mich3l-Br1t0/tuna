@@ -1,5 +1,3 @@
-"""Smoke tests that the core URL wiring and OpenAPI schema are healthy."""
-
 import pytest
 from rest_framework.test import APIClient
 
