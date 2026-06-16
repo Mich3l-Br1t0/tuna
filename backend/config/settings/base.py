@@ -138,8 +138,7 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-# Whether to expose the OpenAPI schema + Swagger/Redoc routes (see config/urls.py).
-# Off by default so production never serves them; local/test turn it on.
+# Off by default so production never serves the API docs (mounted in config/urls.py).
 API_DOCS_ENABLED = False
 
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
