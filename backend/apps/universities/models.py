@@ -34,8 +34,7 @@ class University(TimeStampedModel):
                 raise ValidationError({"name": "A university with a similar name already exists."})
 
     def save(self, *args, **kwargs) -> None:
-        # Keep the key correct even on saves that bypass full_clean().
-        self.normalized_name = normalize_name(self.name)
+        self.normalized_name = self._normalize_name(self.name)
         super().save(*args, **kwargs)
 
 
