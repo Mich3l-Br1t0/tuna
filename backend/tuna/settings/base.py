@@ -31,6 +31,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "dj_rest_auth",
     "corsheaders",
+    "solo",
 ]
 
 LOCAL_APPS = [
@@ -43,6 +44,7 @@ LOCAL_APPS = [
     "apps.registrations",
     "apps.heats",
     "apps.results",
+    "apps.site_content",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
