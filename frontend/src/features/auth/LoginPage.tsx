@@ -1,15 +1,15 @@
 import {
   Alert,
+  Anchor,
   Button,
   Card,
   Center,
   PasswordInput,
   Stack,
   TextInput,
-  Title,
 } from "@mantine/core";
 import { type FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { ApiError } from "../../lib/apiClient";
 import { useLogin } from "./useAuth";
@@ -40,9 +40,13 @@ export function LoginPage() {
       <Card withBorder shadow="sm" padding="xl" radius="md" w={360}>
         <form onSubmit={handleSubmit}>
           <Stack>
-            <Title order={2} ta="center">
-              TUNA
-            </Title>
+            <Anchor component={Link} to="/" underline="never" ta="center">
+              <img
+                src="/tuna-logo.svg"
+                alt="TUNA — Torneio Universitário de Atletismo"
+                style={{ height: 44, display: "inline-block" }}
+              />
+            </Anchor>
             {errorMessage && (
               <Alert color="red" variant="light">
                 {errorMessage}
@@ -64,6 +68,9 @@ export function LoginPage() {
             <Button type="submit" loading={loginMutation.isPending} fullWidth>
               Log in
             </Button>
+            <Anchor component={Link} to="/" ta="center" c="dimmed" fz="sm">
+              ← Voltar para a Home
+            </Anchor>
           </Stack>
         </form>
       </Card>
