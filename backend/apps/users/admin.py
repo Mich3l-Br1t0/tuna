@@ -1,0 +1,13 @@
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
+from .models import User
+
+
+@admin.register(User)
+class TunaUserAdmin(UserAdmin):
+    list_display = ("username", "role", "university", "is_staff")
+    fieldsets = (
+        *(UserAdmin.fieldsets or ()),
+        ("TUNA", {"fields": ("role", "university")}),
+    )
