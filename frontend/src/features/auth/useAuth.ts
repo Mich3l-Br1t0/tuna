@@ -22,6 +22,9 @@ export function useAuth() {
   return {
     user: query.data ?? null,
     isLoading: query.isLoading,
+    // true whenever a request is in flight (initial load OR a refetch), so guards
+    // can wait instead of acting on stale cached data.
+    isFetching: query.isFetching,
     isAuthenticated: query.isSuccess,
     isUnauthenticated: query.isError && (query.error as ApiError).status === 401,
   };
@@ -31,7 +34,9 @@ export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (credentials: LoginCredentials) => login(credentials),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: AUTH_USER_KEY }),
+    // Drop any cached "401 / unauthenticated" error from before login, so the
+    // next observer (RequireAuth) refetches fresh instead of reading a stale miss.
+    onSuccess: () => queryClient.removeQueries({ queryKey: AUTH_USER_KEY }),
   });
 }
 

@@ -6,4 +6,5 @@ urlpatterns = [
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/site-content/", include("apps.site_content.urls")),
     path("api/dashboard/", include("apps.dashboard.urls")),
+    path("api/athletes/", include("apps.athletes.urls")),
 ]

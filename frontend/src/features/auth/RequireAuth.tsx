@@ -5,9 +5,15 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isFetching, isAuthenticated } = useAuth();
 
-  if (isLoading) {
+  // Already authenticated — render even if a background refetch is running.
+  if (isAuthenticated) {
+    return <>{children}</>;
+  }
+
+  // Still determining (initial load or an in-flight refetch) — wait, don't bounce.
+  if (isLoading || isFetching) {
     return (
       <Center mih="100vh">
         <Loader />
@@ -15,9 +21,6 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
+  // Settled and not authenticated.
+  return <Navigate to="/login" replace />;
 }

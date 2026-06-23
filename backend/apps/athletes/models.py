@@ -13,6 +13,7 @@ class Athlete(TimeStampedModel):
     )
     name = models.CharField(max_length=255)
     gender = models.CharField(max_length=1, choices=Gender.choices)
+    disabled = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name

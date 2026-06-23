@@ -9,6 +9,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import { LoginPage } from "./features/auth/LoginPage";
 import { RequireAuth } from "./features/auth/RequireAuth";
+import { AthletesPage } from "./features/dashboard/AthletesPage";
+import { DashboardLayout } from "./features/dashboard/DashboardLayout";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 import { HomePage } from "./features/site/HomePage";
 import { InProgressPage } from "./features/site/InProgressPage";
@@ -23,9 +25,13 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <RequireAuth>
-        <DashboardPage />
+        <DashboardLayout />
       </RequireAuth>
     ),
+    children: [
+      { index: true, element: <DashboardPage /> },
+      { path: "atletas", element: <AthletesPage /> },
+    ],
   },
   // Nav destinations not built yet — shared placeholder.
   { path: "/midia", element: <InProgressPage /> },

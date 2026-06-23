@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import SiteContentView
+from .apis import SiteContentDetailApi
 
 urlpatterns = [
-    path("", SiteContentView.as_view(), name="site-content"),
+    path("", SiteContentDetailApi.as_view(), name="site-content"),
 ]

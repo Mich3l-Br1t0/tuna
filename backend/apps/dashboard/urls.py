@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import DashboardStatsView
+from .apis import DashboardStatsApi
 
 urlpatterns = [
-    path("stats/", DashboardStatsView.as_view(), name="dashboard-stats"),
+    path("stats/", DashboardStatsApi.as_view(), name="dashboard-stats"),
 ]
