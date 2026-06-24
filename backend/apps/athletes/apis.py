@@ -9,6 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.common.enums import Gender
 from apps.common.pagination import get_paginated_response
 from apps.users.models import User
 
@@ -28,7 +29,7 @@ class AthleteListApi(APIView):
 
     class FilterSerializer(serializers.Serializer):
         name = serializers.CharField(required=False, allow_blank=True)
-        gender = serializers.ChoiceField(choices=Athlete.Gender.choices, required=False)
+        gender = serializers.ChoiceField(choices=Gender.choices, required=False)
 
     class OutputSerializer(serializers.Serializer):
         id = serializers.IntegerField()
@@ -57,7 +58,7 @@ class AthleteCreateApi(APIView):
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
-        gender = serializers.ChoiceField(choices=Athlete.Gender.choices)
+        gender = serializers.ChoiceField(choices=Gender.choices)
 
     def post(self, request: Request) -> Response:
         user = cast(User, request.user)
@@ -80,7 +81,7 @@ class AthleteUpdateApi(APIView):
 
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
-        gender = serializers.ChoiceField(choices=Athlete.Gender.choices)
+        gender = serializers.ChoiceField(choices=Gender.choices)
 
     def post(self, request: Request, athlete_id: int) -> Response:
         user = cast(User, request.user)

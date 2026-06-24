@@ -4,10 +4,11 @@ from apps.common.models import TimeStampedModel
 
 
 class University(TimeStampedModel):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField("nome", max_length=255, unique=True)
 
     class Meta:
-        verbose_name_plural = "universities"
+        verbose_name = "universidade"
+        verbose_name_plural = "universidades"
         ordering = ["name"]
 
     def __str__(self) -> str:

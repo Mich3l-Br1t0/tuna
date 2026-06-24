@@ -12,10 +12,12 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     class Role(models.TextChoices):
-        ADMIN = "ADMIN", "Admin"
-        USER = "USER", "User"
+        ADMIN = "ADMIN", "Administrador"
+        USER = "USER", "Usuário"
 
-    role = models.CharField(max_length=5, choices=Role.choices, default=Role.USER)
+    role = models.CharField(
+        "função", max_length=5, choices=Role.choices, default=Role.USER
+    )
     # null university => admin account
     university = models.OneToOneField(
         "universities.University",
@@ -23,6 +25,7 @@ class User(AbstractUser):
         related_name="account",
         null=True,
         blank=True,
+        verbose_name="universidade",
     )
 
     objects = UserManager()

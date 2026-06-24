@@ -5,10 +5,10 @@ from apps.common.models import TimeStampedModel
 
 class Result(TimeStampedModel):
     class Status(models.TextChoices):
-        COMPLETED = "Completed", "Completed"
-        DNF = "DNF", "Did Not Finish"
-        DNS = "DNS", "Did Not Start"
-        DQ = "DQ", "Disqualified"
+        COMPLETED = "Completed", "Concluído"
+        DNF = "DNF", "Não Terminou"
+        DNS = "DNS", "Não Largou"
+        DQ = "DQ", "Desclassificado"
 
     # Exactly one of these is set (enforced by the check constraint below).
     athlete_register = models.ForeignKey(
@@ -17,6 +17,7 @@ class Result(TimeStampedModel):
         related_name="results",
         null=True,
         blank=True,
+        verbose_name="inscrição do atleta",
     )
     relay_entry = models.ForeignKey(
         "athletes.RelayEntry",
@@ -24,13 +25,18 @@ class Result(TimeStampedModel):
         related_name="results",
         null=True,
         blank=True,
+        verbose_name="equipe de revezamento",
     )
-    status = models.CharField(max_length=9, choices=Status.choices)
-    position = models.PositiveIntegerField()
-    result = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
-    is_record = models.BooleanField(default=False)
+    status = models.CharField("situação", max_length=9, choices=Status.choices)
+    position = models.PositiveIntegerField("posição")
+    result = models.DecimalField(
+        "resultado", max_digits=10, decimal_places=3, null=True, blank=True
+    )
+    is_record = models.BooleanField("é recorde", default=False)
 
     class Meta:
+        verbose_name = "resultado"
+        verbose_name_plural = "resultados"
         constraints = [
             models.CheckConstraint(
                 condition=(
