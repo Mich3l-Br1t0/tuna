@@ -61,3 +61,9 @@ class AthleteRegister(TimeStampedModel):
     class Meta:
         verbose_name = "inscrição de atleta"
         verbose_name_plural = "inscrições de atleta"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["stage", "event", "athlete"],
+                name="unique_athlete_event_per_stage",
+            )
+        ]

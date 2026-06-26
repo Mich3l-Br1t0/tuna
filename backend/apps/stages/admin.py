@@ -19,7 +19,13 @@ class EventDataInline(admin.TabularInline):
 
 @admin.register(Stage)
 class StageAdmin(admin.ModelAdmin):
-    list_display = ("name", "date", "location", "start_time", "end_time")
+    list_display = (
+        "name",
+        "date",
+        "location",
+        "registration_opens",
+        "registration_deadline",
+    )
     list_filter = ("date", "location")
     search_fields = ("name",)
     list_select_related = ("location",)

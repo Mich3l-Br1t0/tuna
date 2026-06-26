@@ -15,7 +15,7 @@ import { useAuth, useLogout } from "../auth/useAuth";
 const NAV = [
   { label: "Início", to: "/dashboard" },
   { label: "Atletas", to: "/dashboard/atletas" },
-  { label: "Etapas", to: "/dashboard/etapas", disabled: true },
+  { label: "Etapas", to: "/dashboard/etapas" },
   { label: "Resultados", to: "/dashboard/resultados", disabled: true },
 ];
 

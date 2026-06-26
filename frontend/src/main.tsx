@@ -12,6 +12,8 @@ import { RequireAuth } from "./features/auth/RequireAuth";
 import { AthletesPage } from "./features/dashboard/AthletesPage";
 import { DashboardLayout } from "./features/dashboard/DashboardLayout";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
+import { StageRegistrationPage } from "./features/dashboard/StageRegistrationPage";
+import { StagesPage } from "./features/dashboard/StagesPage";
 import { HomePage } from "./features/site/HomePage";
 import { InProgressPage } from "./features/site/InProgressPage";
 import { theme } from "./theme";
@@ -31,6 +33,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <DashboardPage /> },
       { path: "atletas", element: <AthletesPage /> },
+      { path: "etapas", element: <StagesPage /> },
+      { path: "etapas/:stageId", element: <StageRegistrationPage /> },
     ],
   },
   // Nav destinations not built yet — shared placeholder.

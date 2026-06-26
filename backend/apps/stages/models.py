@@ -29,10 +29,25 @@ class Stage(TimeStampedModel):
     date = models.DateField("data", null=True, blank=True)
     start_time = models.TimeField("horário de início", null=True, blank=True)
     end_time = models.TimeField("horário de término", null=True, blank=True)
+    registration_opens = models.DateField(
+        "início das inscrições", null=True, blank=True
+    )
+    registration_deadline = models.DateField(
+        "prazo de inscrição", null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "etapa"
         verbose_name_plural = "etapas"
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(registration_deadline__lt=models.F("date")),
+                name="registration_deadline_before_stage_date",
+                violation_error_message=(
+                    "O prazo de inscrição deve ser anterior à data da etapa."
+                ),
+            )
+        ]
 
     def __str__(self) -> str:
         return self.name
