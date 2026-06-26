@@ -13,8 +13,10 @@ import {
 } from "@mantine/core";
 import { Link } from "react-router-dom";
 
+import { formatDateBR } from "../../lib/date";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { useNextStage } from "./useNextStage";
 import { useSiteContent } from "./useSiteContent";
 
 /** Render a text block where paragraphs are separated by blank lines. */
@@ -32,6 +34,7 @@ function Paragraphs({ text }: { text: string }) {
 
 export function HomePage() {
   const { data, isLoading } = useSiteContent();
+  const nextStage = useNextStage();
 
   if (isLoading || !data) {
     return (
@@ -95,9 +98,21 @@ export function HomePage() {
               <Text tt="uppercase" fw={700} c="brand.8" fz="sm" lts={1}>
                 Próxima Etapa
               </Text>
-              <Text fz="lg" fw={500}>
-                {data.proxima_etapa}
-              </Text>
+              {nextStage.data ? (
+                <>
+                  <Text fz="lg" fw={500}>
+                    {nextStage.data.name}
+                  </Text>
+                  <Text c="dimmed">
+                    {formatDateBR(nextStage.data.date)}
+                    {nextStage.data.location && ` · ${nextStage.data.location}`}
+                  </Text>
+                </>
+              ) : (
+                <Text fz="lg" fw={500} c="dimmed">
+                  A definir
+                </Text>
+              )}
               {data.regulamento_url && (
                 <Button
                   component="a"

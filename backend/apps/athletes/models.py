@@ -14,6 +14,12 @@ class Athlete(TimeStampedModel):
     name = models.CharField("nome", max_length=255)
     gender = models.CharField("sexo", max_length=1, choices=Gender.choices)
     disabled = models.BooleanField("desativado", default=False)
+    events = models.ManyToManyField(
+        "events.Event",
+        related_name="athletes",
+        blank=True,
+        verbose_name="provas",
+    )
 
     class Meta:
         verbose_name = "atleta"

@@ -6,6 +6,7 @@ import {
   Group,
   Loader,
   Modal,
+  MultiSelect,
   Pagination,
   Select,
   Stack,
@@ -26,6 +27,7 @@ import {
   useDeleteAthlete,
   useUpdateAthlete,
 } from "./useAthletes";
+import { useEvents } from "./useEvents";
 
 const GENDER: Record<string, string> = { M: "Masculino", F: "Feminino" };
 const GENDER_OPTIONS = [
@@ -92,17 +94,21 @@ export function AthletesPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebouncedValue(search, 300);
   const [gender, setGender] = useState<string | null>(null);
+  const [event, setEvent] = useState<string | null>(null);
   const [pageSize, setPageSize] = useState(25);
   const [page, setPage] = useState(1);
+
+  const { data: events } = useEvents();
 
   // Any filter / page-size change resets to the first page.
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, gender, pageSize]);
+  }, [debouncedSearch, gender, event, pageSize]);
 
   const { data, isLoading } = useAthletes({
     name: debouncedSearch || undefined,
     gender: gender as "M" | "F" | null,
+    event: event ? Number(event) : null,
     limit: pageSize,
     offset: (page - 1) * pageSize,
   });
@@ -157,6 +163,19 @@ export function AthletesPage() {
           onChange={setGender}
           clearable
           w={180}
+        />
+        <Select
+          label="Prova"
+          placeholder="Todas"
+          data={(events ?? []).map((e) => ({
+            value: String(e.id),
+            label: e.name,
+          }))}
+          value={event}
+          onChange={setEvent}
+          searchable
+          clearable
+          w={220}
         />
         <Select
           label="Por página"
@@ -280,6 +299,11 @@ function AthleteFormModal({
 
   const [name, setName] = useState(athlete?.name ?? "");
   const [gender, setGender] = useState<string | null>(athlete?.gender ?? null);
+  const [eventIds, setEventIds] = useState<string[]>(
+    athlete?.events.map((e) => String(e.id)) ?? [],
+  );
+
+  const { data: events } = useEvents();
 
   const pending = createMutation.isPending || updateMutation.isPending;
   const valid = name.trim() !== "" && gender !== null;
@@ -288,7 +312,11 @@ function AthleteFormModal({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!valid) return;
-    const data = { name: name.trim(), gender: gender as "M" | "F" };
+    const data = {
+      name: name.trim(),
+      gender: gender as "M" | "F",
+      event_ids: eventIds.map(Number),
+    };
     if (isEdit) {
       updateMutation.mutate({ id: athlete.id, data }, { onSuccess: onClose });
     } else {
@@ -324,6 +352,18 @@ function AthleteFormModal({
             value={gender}
             onChange={setGender}
             required
+          />
+          <MultiSelect
+            label="Provas"
+            placeholder="Selecione as provas…"
+            data={(events ?? []).map((e) => ({
+              value: String(e.id),
+              label: e.name,
+            }))}
+            value={eventIds}
+            onChange={setEventIds}
+            searchable
+            clearable
           />
           <Button type="submit" loading={pending} disabled={!valid} mt="sm">
             {isEdit ? "Salvar" : "Criar"}

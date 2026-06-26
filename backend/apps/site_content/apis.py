@@ -15,7 +15,6 @@ class SiteContentDetailApi(APIView):
     class OutputSerializer(serializers.Serializer):
         historico = serializers.CharField()
         o_torneio = serializers.CharField()
-        proxima_etapa = serializers.CharField()
         regulamento_url = serializers.URLField()
         contato_email = serializers.EmailField()
         instagram_url = serializers.URLField()

@@ -12,11 +12,17 @@ def athlete_list(
 ) -> QuerySet[Athlete]:
     filters = filters or {}
 
-    qs = Athlete.objects.filter(university=university).order_by("name")
+    qs = (
+        Athlete.objects.filter(university=university)
+        .prefetch_related("events")
+        .order_by("name")
+    )
 
     if filters.get("name"):
         qs = qs.filter(name__icontains=filters["name"])
     if filters.get("gender"):
         qs = qs.filter(gender=filters["gender"])
+    if filters.get("event"):
+        qs = qs.filter(events=filters["event"])
 
     return qs

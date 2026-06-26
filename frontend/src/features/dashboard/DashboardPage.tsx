@@ -1,14 +1,15 @@
 import { Button, Card, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { Link } from "react-router-dom";
 
+import { formatDateBR } from "../../lib/date";
 import { useAuth } from "../auth/useAuth";
-import { useSiteContent } from "../site/useSiteContent";
+import { useNextStage } from "../site/useNextStage";
 import { useDashboardStats } from "./useDashboardStats";
 
 export function DashboardPage() {
   const { user } = useAuth();
   const stats = useDashboardStats();
-  const site = useSiteContent();
+  const nextStage = useNextStage();
 
   return (
     <Stack gap="lg">
@@ -20,7 +21,11 @@ export function DashboardPage() {
             Próxima etapa
           </Text>
           <Text fw={500} mt="xs">
-            {site.data?.proxima_etapa ?? "—"}
+            {nextStage.data
+              ? `${nextStage.data.name} · ${formatDateBR(nextStage.data.date)}${
+                  nextStage.data.location ? ` · ${nextStage.data.location}` : ""
+                }`
+              : "—"}
           </Text>
         </Card>
 

@@ -5,7 +5,6 @@ import { api } from "../../lib/apiClient";
 export type SiteContent = {
   historico: string;
   o_torneio: string;
-  proxima_etapa: string;
   regulamento_url: string;
   contato_email: string;
   instagram_url: string;

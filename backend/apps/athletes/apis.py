@@ -30,11 +30,16 @@ class AthleteListApi(APIView):
     class FilterSerializer(serializers.Serializer):
         name = serializers.CharField(required=False, allow_blank=True)
         gender = serializers.ChoiceField(choices=Gender.choices, required=False)
+        event = serializers.IntegerField(required=False)
 
     class OutputSerializer(serializers.Serializer):
         id = serializers.IntegerField()
         name = serializers.CharField()
         gender = serializers.CharField()
+        events = serializers.SerializerMethodField()
+
+        def get_events(self, athlete: Athlete) -> list[dict[str, Any]]:
+            return [{"id": e.id, "name": e.name} for e in athlete.events.all()]
 
     def get(self, request: Request) -> Response:
         filters_serializer = self.FilterSerializer(data=request.query_params)
@@ -59,6 +64,9 @@ class AthleteCreateApi(APIView):
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
         gender = serializers.ChoiceField(choices=Gender.choices)
+        event_ids = serializers.ListField(
+            child=serializers.IntegerField(), required=False, default=list
+        )
 
     def post(self, request: Request) -> Response:
         user = cast(User, request.user)
@@ -70,7 +78,10 @@ class AthleteCreateApi(APIView):
         data = cast(dict[str, Any], serializer.validated_data)
 
         athlete_create(
-            name=data["name"], gender=data["gender"], university=user.university
+            name=data["name"],
+            gender=data["gender"],
+            university=user.university,
+            event_ids=data["event_ids"],
         )
 
         return Response(status=status.HTTP_201_CREATED)
@@ -82,6 +93,9 @@ class AthleteUpdateApi(APIView):
     class InputSerializer(serializers.Serializer):
         name = serializers.CharField()
         gender = serializers.ChoiceField(choices=Gender.choices)
+        event_ids = serializers.ListField(
+            child=serializers.IntegerField(), required=False, default=list
+        )
 
     def post(self, request: Request, athlete_id: int) -> Response:
         user = cast(User, request.user)
@@ -91,7 +105,12 @@ class AthleteUpdateApi(APIView):
         serializer.is_valid(raise_exception=True)
         data = cast(dict[str, Any], serializer.validated_data)
 
-        athlete_update(athlete=athlete, name=data["name"], gender=data["gender"])
+        athlete_update(
+            athlete=athlete,
+            name=data["name"],
+            gender=data["gender"],
+            event_ids=data["event_ids"],
+        )
 
         return Response(status=status.HTTP_200_OK)
 

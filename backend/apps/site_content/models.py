@@ -30,14 +30,6 @@ class SiteContent(SingletonModel):
             "Centro Univertitário Sant'Anna, UNIP, UFPR, entre outras."
         ),
     )
-    proxima_etapa = models.TextField(
-        "Próxima etapa",
-        default=(
-            "16/08/2026 - Arena Olímpica - Centro de Atletismo Professor Oswaldo "
-            "Terra - R. Tiradentes, 1845 - Santa Terezinha, São Bernardo do "
-            "Campo - SP"
-        ),
-    )
     regulamento_url = models.URLField("Link do regulamento", blank=True)
     contato_email = models.EmailField("E-mail de contato", default="tunaorg@gmail.com")
     instagram_url = models.URLField("Instagram", blank=True)

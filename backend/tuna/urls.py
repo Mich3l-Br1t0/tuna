@@ -7,4 +7,6 @@ urlpatterns = [
     path("api/site-content/", include("apps.site_content.urls")),
     path("api/dashboard/", include("apps.dashboard.urls")),
     path("api/athletes/", include("apps.athletes.urls")),
+    path("api/events/", include("apps.events.urls")),
+    path("api/stages/", include("apps.stages.urls")),
 ]
